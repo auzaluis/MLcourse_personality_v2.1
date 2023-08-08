@@ -41,11 +41,64 @@ library(tidyverse)
 
 DF2 <- DF %>%
   mutate(edad2 = ifelse(test = is.na(`Escribe tu edad exacta`),
-                        yes = mean(`Escribe tu edad exacta`,
-                                   na.rm = T),
-                        no = `Escribe tu edad exacta`))
+                        yes  = mean(`Escribe tu edad exacta`,
+                                    na.rm = T),
+                        no   = `Escribe tu edad exacta`)) %>% 
+  relocate(edad2, .before = Sexo)
 
-# hacer un relocate
+
+
+### Eliminar la fila completa
+
+# DF2 <- DF %>% na.omit()
+# DF2 <- na.omit(DF)
+
+nrow(DF)
+nrow(DF2)
+
+
+## Estandarización de variables
+
+### Normalización
+
+DF$`Escribe tu edad exacta`
+scale(DF$`Escribe tu edad exacta`)
+DF$`Escribe tu edad exacta` %>% scale()
+
+
+# Crear una nueva columnas que se llame edad3
+# que contenga los valores normalizados de edad2
+# y además ubicarla después de edad 2
+DF3 <- DF2 %>% 
+  mutate(edad3 = scale(edad2)) %>% 
+  relocate(edad3, .after = edad2)
+
+
+
+### Convertir a rango
+library(scales)
+
+rescale(DF3$edad2)
+# Creando un DF (tbl) temporal
+tibble(
+  edad2 = DF3$edad2,
+  edad4 = rescale(DF3$edad2)
+)
+
+
+
+DF3 <- DF3 %>% 
+  mutate(edad4 = rescale(edad2)) %>% 
+  relocate(edad4, .after = edad3)
+
+
+
+
+
+
+
+
+
 
 
 

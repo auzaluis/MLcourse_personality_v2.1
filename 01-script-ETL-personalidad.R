@@ -94,7 +94,7 @@ DF3 <- DF3 %>%
 
 ## Agrupaciones
 
-### Variables numérica
+### Variables numéricas
 
 DF3$edad2
 cut(x = DF3$edad2,
@@ -121,9 +121,67 @@ DF4 <- DF3 %>%
 
 
 
+### Variables categóricas
+
+DF4[,11] %>% unique()
+tibble(
+  original = DF4[,11],
+  t2b      = ifelse(test = DF4[,11] == "Totalmente verdadero" |
+                      DF4[,11] == "Un poco verdadero",
+                    yes = "SI",
+                    no = "NO")
+)
 
 
 
+# (paréntesis) Bucle
+
+## Paso 1: Crear un vector que contenga los nombres
+## de las variables donde se va a aplicar el bucle
+
+frases <- DF4 %>% 
+  # selecciona columnas
+  select(starts_with("Según tu")) %>% 
+  colnames()
+
+frases
+
+## Backup del DF
+DF5 <- DF4
+
+
+### Paso2: Ejecutar el bucle
+
+for (variable in frases) {
+  
+  DF5[,variable] <-ifelse(
+    test = DF5[,variable] == "Totalmente verdadero" |
+      DF5[,variable] == "Un poco verdadero",
+    yes = 1,
+    no = 0
+  ) 
+  
+}
+
+
+
+# Manipulación de data frames ----
+
+class(DF5)
+DF5 %>% as_tibble()
+
+## Función select
+
+DF5 %>% select(Sexo)
+DF5 %>% select(Sexo, `Escribe tu edad exacta`)
+# eliminando 1 columna
+DF5 %>% select(-`Marca temporal`)
+# eliminando más de 1 columna 
+DF5 %>% select(!c(`Marca temporal`,
+                  `¿Estás estudiando en algún colegio, universidad o instituto?`))
+DF5 %>% select(starts_with("edad"))
+DF5 %>% select(ends_with("00"))
+DF5 %>% select(contains("forma de"))
 
 
 

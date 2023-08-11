@@ -92,9 +92,32 @@ DF3 <- DF3 %>%
   relocate(edad4, .after = edad3)
 
 
+## Agrupaciones
+
+### Variables numérica
+
+DF3$edad2
+cut(x = DF3$edad2,
+    breaks = c(-Inf, 18, 23, Inf),
+    labels = c("18 o menos", "19 a 23", "Más de 23"))
+
+# Creando un DF (tbl) temporal
+tibble(
+  edad2 = DF3$edad2,
+  edad5 = cut(x = DF3$edad2,
+              breaks = c(-Inf, 18, 23, Inf),
+              labels = c("18 o menos", "19 a 23", "Más de 23"))
+)
 
 
 
+DF4 <- DF3 %>% 
+  mutate(edad5 = cut(x = edad2,
+                     breaks = c(-Inf, 18, 23, Inf),
+                     labels = c("18 o menos", "19 a 23", "Más de 23"))) %>% 
+  relocate(edad5, .after = edad4) %>% 
+  # convirtiendo a tibble
+  as_tibble()
 
 
 

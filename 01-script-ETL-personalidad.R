@@ -185,5 +185,138 @@ DF5 %>% select(contains("forma de"))
 
 
 
+## Función filter
+
+DF5 %>%
+  filter(Sexo == "Mujer") %>% 
+  select(Sexo)
+
+
+
+DF5 %>% 
+  select(Sexo) %>% 
+  filter(Sexo == "Hombre")
+
+
+
+DF5 %>% 
+  select(`Escribe tu edad exacta`) %>% 
+  filter(`Escribe tu edad exacta` >= 20)
+
+DF5 %>% 
+  filter(`Escribe tu edad exacta` >= 18 &
+           `Escribe tu edad exacta` <= 21) %>% 
+  select(`Escribe tu edad exacta`) 
+  
+
+
+DF5 %>% 
+  filter(between(`Escribe tu edad exacta`,
+                 left = 18,
+                 right = 21)) %>% 
+  select(`Escribe tu edad exacta`) 
+
+
+
+DF5 %>% 
+  filter(Sexo == "Mujer",
+         between(`Escribe tu edad exacta`,
+                 left = 15,
+                 right = 18)) %>% 
+  select(`Escribe tu edad exacta`,
+         Sexo)
+
+
+
+## Cambio de nombre de columnas
+DF6 <- DF5
+colnames(DF6)
+
+
+
+### APPS
+#### Paso1: Crear un vector con los nuevos nombres
+apps <- c("TikTok", "Instagram", "Facebook", "YouTube")
+
+#### Paso2: Reemplazar los nombres
+colnames(DF6)[35:38] <- apps
+
+
+
+### Frases
+#### Paso1: Crear un vector con los nuevos nombres
+frases2 <- frases %>% 
+  as_tibble() %>% 
+  
+  separate(col = "value",
+           into = c("No sirve", "Me sirve"),
+           sep ="\\[") %>% 
+  select("Me sirve") %>% 
+  
+  separate(col = "Me sirve",
+           into = c("Me sirve", "No sirve"),
+           sep = "\\]") %>% 
+  select("Me sirve") %>% 
+  
+  as_vector()
+
+
+
+## Pivotado
+
+### Pivot longer
+
+DF7 <- DF6 %>%
+  select(`Marca temporal`, Sexo, all_of(apps)) %>% 
+  pivot_longer(cols = apps,
+               names_to = "apps",
+               values_to = "time")
+
+
+
+### Pivot wider
+
+DF8 <- DF7 %>% 
+  pivot_wider(names_from = "apps",
+              values_from = "time")
+
+
+
+### (Transformación de hora a numero)
+
+# strsplit separa textos
+
+strsplit(x = DF7$time,
+         split = ":") %>% 
+  head()
+
+
+
+# transformación
+
+DF7$time <- sapply(X = strsplit(x = DF7$time,
+                                split = ":"),
+                   
+                   function(x){
+                     
+                     x <- as.numeric(x)
+                     x[1] + x[2]/60 + x[3]/60^2
+                     
+                   })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

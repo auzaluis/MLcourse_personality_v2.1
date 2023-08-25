@@ -170,7 +170,7 @@ for (variable in frases) {
 class(DF5)
 DF5 %>% as_tibble()
 
-## Función select
+## Función select ----
 
 DF5 %>% select(Sexo)
 DF5 %>% select(Sexo, `Escribe tu edad exacta`)
@@ -185,7 +185,7 @@ DF5 %>% select(contains("forma de"))
 
 
 
-## Función filter
+## Función filter ----
 
 DF5 %>%
   filter(Sexo == "Mujer") %>% 
@@ -228,7 +228,7 @@ DF5 %>%
 
 
 
-## Cambio de nombre de columnas
+## Cambio de nombre de columnas ----
 DF6 <- DF5
 colnames(DF6)
 
@@ -262,7 +262,7 @@ frases2 <- frases %>%
 
 
 
-## Pivotado
+## Pivotado ----
 
 ### Pivot longer
 
@@ -303,6 +303,77 @@ DF7$time <- sapply(X = strsplit(x = DF7$time,
                      x[1] + x[2]/60 + x[3]/60^2
                      
                    })
+
+
+
+## Detección de Outliers ----
+
+## Gráficas: Boxplots
+
+# Boxplot feo
+boxplot(DF7$time, range = 3)
+
+
+
+# boxplot bonito
+library(plotly)
+library(tidyquant)
+
+ggplotly(
+  DF7 %>% 
+    ggplot(mapping = aes(x = apps,
+                         y = time,
+                         fill = apps)) +
+    geom_boxplot() +
+    labs(x = "", y = "Promedio en horas",
+         title = "Uso de redes sociales") +
+    theme_classic() +
+    theme(legend.position = "none")
+)
+
+
+
+# violin chart
+
+ggplotly(
+  DF7 %>% 
+    ggplot(mapping = aes(x = apps,
+                         y = time,
+                         fill = apps)) +
+    geom_violin() +
+    labs(x = "", y = "Promedio en horas",
+         title = "Uso de redes sociales") +
+    theme_classic() +
+    theme(legend.position = "none")
+)
+
+
+
+# gráfico de densidad, para ver distribución
+
+DF7 %>% 
+  ggplot(mapping = aes(x = time,
+                       fill = apps)) +
+  geom_density(alpha = 0.75,
+               color = "#787878") +
+  labs(title = "Distribución del consumo de RRSS",
+       subtitle = "Consumo en los últimos 7 días",
+       caption = "Conclusión: YouTube es la app menos usada") +
+  facet_wrap(~ apps, nrow = 1) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#8ecae6",
+                               "#219ebc",
+                               "#ffb703",
+                               "#fb8500")) +
+  theme(plot.title = element_text(face = "bold",
+                                  size = 12,
+                                  color = "#023047"),
+        #quitar legenda
+        legend.position = "none",
+        #quitar lineas intermedias
+        panel.grid.minor = element_blank())
+
+
 
 
 

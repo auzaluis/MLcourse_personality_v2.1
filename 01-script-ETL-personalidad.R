@@ -332,6 +332,21 @@ ggplotly(
 )
 
 
+ggplotly(
+  DF7 %>% 
+    filter(Sexo %in% c("Hombre", "Mujer")) %>% 
+    ggplot(mapping = aes(x = apps,
+                         y = time,
+                         color = apps)) +
+    geom_boxplot() +
+    facet_wrap(~ Sexo) +
+    labs(x = "", y = "Promedio en horas",
+         title = "Uso de redes sociales") +
+    theme_bw() +
+    theme(legend.position = "none")
+)
+
+
 
 # violin chart
 

@@ -306,9 +306,9 @@ DF7$time <- sapply(X = strsplit(x = DF7$time,
 
 
 
-## Detección de Outliers ----
+## Graficas con GGPLOT ----
 
-## Gráficas: Boxplots
+## Boxplots
 
 # Boxplot feo
 boxplot(DF7$time, range = 3)
@@ -319,7 +319,7 @@ boxplot(DF7$time, range = 3)
 library(plotly)
 library(tidyquant)
 
-ggplotly(
+boxplot <- ggplotly(
   DF7 %>% 
     ggplot(mapping = aes(x = apps,
                          y = time,
@@ -367,30 +367,38 @@ ggplotly(
 # gráfico de densidad, para ver distribución
 
 DF7 %>% 
+  filter(Sexo %in% c("Hombre", "Mujer")) %>% 
+  
   ggplot(mapping = aes(x = time,
-                       fill = apps)) +
-  geom_density(alpha = 0.75,
+                       fill = Sexo)) +
+  
+  geom_density(alpha = 0.5,
                color = "#787878") +
+  
   labs(title = "Distribución del consumo de RRSS",
        subtitle = "Consumo en los últimos 7 días",
        caption = "Conclusión: YouTube es la app menos usada") +
-  facet_wrap(~ apps, nrow = 1) +
+  
+  facet_wrap(~ apps, nrow =2) +
+  
   theme_minimal() +
+  
   scale_fill_manual(values = c("#8ecae6",
-                               "#219ebc",
-                               "#ffb703",
-                               "#fb8500")) +
+                               "#ffb703")) +
+  
   theme(plot.title = element_text(face = "bold",
                                   size = 12,
                                   color = "#023047"),
-        #quitar legenda
-        legend.position = "none",
+        legend.position = "top",
         #quitar lineas intermedias
         panel.grid.minor = element_blank())
 
 
 
+## Detección de outliers ----
 
+### Boxplots
+boxplot
 
 
 

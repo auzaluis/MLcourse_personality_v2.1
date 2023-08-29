@@ -335,14 +335,15 @@ boxplot <- ggplotly(
 ggplotly(
   DF7 %>% 
     filter(Sexo %in% c("Hombre", "Mujer")) %>% 
-    ggplot(mapping = aes(x = apps,
+    ggplot(mapping = aes(x = Sexo,
                          y = time,
-                         color = apps)) +
+                         fill = apps)) +
     geom_boxplot() +
-    facet_wrap(~ Sexo) +
+    facet_wrap(~ apps, nrow = 1) +
     labs(x = "", y = "Promedio en horas",
          title = "Uso de redes sociales") +
-    theme_bw() +
+    theme_minimal() +
+    scale_fill_tq() +
     theme(legend.position = "none")
 )
 
@@ -399,6 +400,59 @@ DF7 %>%
 
 ### Boxplots
 boxplot
+
+DF7.1 <- DF7 %>% 
+  mutate(outlier = case_when(
+    
+    apps == "Facebook"  & time > 10    ~ "SI",
+    apps == "Instagram" & time > 13.28 ~ "SI",
+    apps == "TikTok"    & time > 15.58 ~ "SI",
+    apps == "YouTube"   & Sexo == "Hombre" & time > 16  ~ "SI",
+    apps == "YouTube"   & Sexo == "Mujer"  & time > 5 ~ "SI",
+    .default = "NO"
+    
+  )) %>% na.omit()
+
+
+
+## Uso de group_by & summarise
+
+DF7.1 %>%
+  filter(outlier == "NO") %>%
+  group_by(apps, Sexo) %>% 
+  summarise(media =      mean(time),
+            mediana =    median(time),
+            desviación = sd(time),
+            min =        min(time),
+            max =        max(time)) %>% 
+  ungroup()
+
+
+
+DF7.1 %>%
+  filter(outlier == "NO") %>%
+  group_by(apps, Sexo) %>% 
+  summarise(media = mean(time)) %>% 
+  ungroup() %>% 
+  pivot_wider(names_from = Sexo,
+              values_from = media)
+
+
+
+## Valores normalizados
+
+DF7.1 %>% 
+  group_by(apps) %>% 
+  mutate(time_z = scale(time),
+         outlier = ifelse(test = time_z > 2,
+                          yes = "SI",
+                          no = "NO")) %>%
+  filter(outlier == "NO") %>% 
+  summarise(media = mean(time))
+
+
+
+
 
 
 
